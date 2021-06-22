@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+    api:
+        container_name: node-oken
+        restart: always
+        build: .
+        ports:
+            - "5000:3000"
+        links:
+            - db
+        depends_on: 
+            - db
+        volumes: 
+            - .:/usr/src/app
+        networks:
+            - app-network
+    db:
+        container_name: mongo-db
+        image: mongo
+        ports: 
+            - "27017:27017"
+        logging: 
+            driver: none
+        networks:
+            - app-network
+    proxy:
+        image: nginx:alpine
+        container_name: web-proxy
+        restart: unless-stopped
+        volumes:
+            - ./proxy.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - 80:80
+        depends_on:
+            - api
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge

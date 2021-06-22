@@ -6,6 +6,8 @@ const path = require('path')
 
 // app.use(cors)
 
+require('./database')
+
 app.use('/', require('./routes/index'))
 // app.use(require('./routes/index'))
 
